@@ -4,9 +4,11 @@ namespace backend\controllers\operator;
 
 use backend\models\KategoriPembangunan;
 use backend\models\KategoriPembangunanSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * KategoriPembangunanController implements the CRUD actions for KategoriPembangunan model.
@@ -29,6 +31,18 @@ class KategoriPembangunanController extends Controller
                 ],
             ]
         );
+    }
+    
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1 && Yii::$app->user->identity->roles_id != 7) {
+            throw new MethodNotAllowedHttpException('Hanya Admin dan Operator yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**

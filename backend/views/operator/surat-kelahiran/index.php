@@ -13,15 +13,16 @@ $this->title = 'Surat Kelahirans';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="surat-kelahiran-index">
+<div class="col-lg-12 mx-auto py-3">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card card-outline card-primary">
+        <h1 class="d-flex justify-content-center mb-2"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Surat Kelahiran', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="mt-3 ml-3">
+            <?= Html::a('<i class="fas fa-plus"></i> Tambah', ['create'], ['class' => 'btn btn-primary']) ?>
+        </div>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <div class="card-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -58,7 +59,11 @@ $this->params['breadcrumbs'][] = $this->title;
             //'lampiran_surat_nikah',
             //'lampiran_surat_kelahiran',
             //'flag',
-            //'status',
+            // 'status',
+            [
+                'label' => 'Status Surat',
+                'attribute' => 'status1.nama',
+            ],
             //'created_at',
             //'updated_at',
             //'created_by',
@@ -66,10 +71,19 @@ $this->params['breadcrumbs'][] = $this->title;
             //'approval_date_kades',
             //'kades_id',
             [
-                'class' => ActionColumn::className(),
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{view} {update} {delete} {print}',
+                'buttons' => [
+                    'print' => function($url, $model, $key) {
+                        return Html::a('<i class = "fa-solid fa-print"></i>', Url::to(['/operator/surat-kelahiran/print', 'id' => $model->id]));
+                    }
+                ]
             ],
         ],
-    ]); ?>
+        ]); ?>
+        </div>
+    </div>
 
+</div>
 
 </div>

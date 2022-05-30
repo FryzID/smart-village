@@ -14,15 +14,14 @@
         <h5 class="text-center">Nomor : <?= $item->no_surat ?></h5><br>
         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini Ketua RT....../RW......Kelurahan Pahandut, Kecamatan Pahandut, Kota Palangka Raya  menerangkan dengan sebenarnya bahwa orang tersebut dibawah ini : </p><br>
 
-        <p>Nama : </p>
+        <p>Nama :  <?= $item->dataPenduduk->nama_lengkap ?></p>
         <p>NIK : <?= $item->nik ?></p>
-        <p>Tempat, Tanggal Lahir : </p>
-        <p>Jenis Kelamin : </p>
-        <p>Agama : </p>
-        <p>Pendidikan : </p>
-        <p>Pekerjaan : </p>
-        <p>Status Perkawinan : </p>
-        <p>Alamat : </p><br>
+        <p>Tempat, Tanggal Lahir :  <?= $item->dataPenduduk->tempat_lahir?>, <?= $item->dataPenduduk->tanggal_lahir ?></p>
+        <p>Jenis Kelamin :  <?= $item->dataPenduduk->jenis_kelamin ?></p>
+        <p>Agama :  <?= $item->dataPenduduk->agama_id ?></p>
+        <p>Pendidikan :  <?= $item->dataPenduduk->pendidikan_id ?></p>
+        <p>Pekerjaan :  <?= $item->dataPenduduk->pekerjaan_id ?></p>
+        <p>Status Perkawinan : <?= $item->dataPenduduk->status_perkawinan ?> </p>
 
         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bahwa nama tersebut diatas adalah benar warga kami yang bertempat tinggal di alamat tersebut dan tergolong keluarga tidak mampu/ekonomi lemah. Surat Keterangan Tidak Mampu ini diberikan untuk keperluan <?= $item->keterangan ?></p>
         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikian Surat Keterangan Tidak Mampu ini diberikan kepada yang bersangkutan untuk dapat dipergunakan sebagaimana mestinya.  </p><br><br>

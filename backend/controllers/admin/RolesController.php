@@ -2,11 +2,13 @@
 
 namespace backend\controllers\admin;
 
+use Yii;
 use backend\models\Roles;
 use backend\models\RolesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * RolesController implements the CRUD actions for Roles model.
@@ -29,6 +31,18 @@ class RolesController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1) {
+            throw new MethodNotAllowedHttpException('Hanya Admin yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**

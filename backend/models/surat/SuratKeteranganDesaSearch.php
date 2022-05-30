@@ -17,8 +17,8 @@ class SuratKeteranganDesaSearch extends SuratKeteranganDesa
     public function rules()
     {
         return [
-            [['id', 'kades_id', 'created_by', 'updated_by', 'status', 'flag'], 'integer'],
-            [['judul_surat', 'no_surat', 'nik', 'no_telp', 'keterangan', 'keperluan', 'lampiran_ktp', 'created_at', 'updated_at', 'desa_pengantar', 'approval_date_kades'], 'safe'],
+            [['id', 'kades_id', 'nik_id', 'no_telp', 'created_by', 'updated_by', 'status', 'flag'], 'integer'],
+            [['judul_surat', 'no_surat', 'keterangan', 'keperluan', 'lampiran_ktp', 'created_at', 'updated_at', 'desa_pengantar', 'approval_date_kades'], 'safe'],
         ];
     }
 
@@ -60,6 +60,8 @@ class SuratKeteranganDesaSearch extends SuratKeteranganDesa
         $query->andFilterWhere([
             'id' => $this->id,
             'kades_id' => $this->kades_id,
+            'nik_id' => $this->nik_id,
+            'no_telp' => $this->no_telp,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_by' => $this->created_by,
@@ -71,8 +73,6 @@ class SuratKeteranganDesaSearch extends SuratKeteranganDesa
 
         $query->andFilterWhere(['like', 'judul_surat', $this->judul_surat])
             ->andFilterWhere(['like', 'no_surat', $this->no_surat])
-            ->andFilterWhere(['like', 'nik', $this->nik])
-            ->andFilterWhere(['like', 'no_telp', $this->no_telp])
             ->andFilterWhere(['like', 'keterangan', $this->keterangan])
             ->andFilterWhere(['like', 'keperluan', $this->keperluan])
             ->andFilterWhere(['like', 'lampiran_ktp', $this->lampiran_ktp])

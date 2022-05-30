@@ -17,7 +17,7 @@ use Yii;
  * @property string $updated_at
  *
  * @property KategoriPembangunan $kategoriPembangunan
- * @property Users $users
+ * @property User $users
  */
 class RequestPembangunan extends \yii\db\ActiveRecord
 {
@@ -69,7 +69,7 @@ class RequestPembangunan extends \yii\db\ActiveRecord
      */
     public function getKategoriPembangunan()
     {
-        return $this->hasOne(KategoriPembangunan::className(), ['id' => 'kategori_pembangunan_id']);
+        return $this->hasOne(\common\models\KategoriPembangunan::className(), ['id' => 'kategori_pembangunan_id']);
     }
 
     /**
@@ -77,8 +77,8 @@ class RequestPembangunan extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
+    public function getUsers()
     {
-        return $this->hasOne(Users::className(), ['id' => 'users_id']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'users_id']);
     }
 }

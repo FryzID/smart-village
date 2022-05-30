@@ -2,6 +2,10 @@
 
 namespace backend\models;
 
+use backend\models\surat\SuratKelahiran;
+use backend\models\surat\SuratKematian;
+use backend\models\surat\SuratKeteranganDesa;
+use backend\models\surat\SuratKeteranganMiskin;
 use Yii;
 
 /**
@@ -51,13 +55,14 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['roles_id', 'name', 'username', 'password', 'auth_key', 'access_token', 'email', 'photo'], 'required'],
+            [['name', 'username', 'password', 'auth_key'], 'required'],
             [['roles_id', 'penduduk_id'], 'integer'],
             [['last_login', 'created_at', 'updated_at'], 'safe'],
-            [['name', 'password', 'password_reset_token', 'access_token', 'email', 'photo'], 'string', 'max' => 255],
+            [['name', 'password', 'password_reset_token', 'access_token', 'email'], 'string', 'max' => 255],
             [['username'], 'string', 'max' => 100],
             [['auth_key'], 'string', 'max' => 32],
             [['password_reset_token'], 'unique'],
+            [['photo'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
             [['penduduk_id'], 'exist', 'skipOnError' => true, 'targetClass' => Penduduk::className(), 'targetAttribute' => ['penduduk_id' => 'id']],
         ];
     }
@@ -96,16 +101,6 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[LaporAduans0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLaporAduans0()
-    {
-        return $this->hasMany(LaporAduan::className(), ['users_id' => 'id']);
-    }
-
-    /**
      * Gets query for [[Mitras]].
      *
      * @return \yii\db\ActiveQuery
@@ -121,26 +116,6 @@ class User extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getPembangunans()
-    {
-        return $this->hasMany(Pembangunan::className(), ['users_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Pembangunans0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPembangunans0()
-    {
-        return $this->hasMany(Pembangunan::className(), ['users_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Pembangunans1]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPembangunans1()
     {
         return $this->hasMany(Pembangunan::className(), ['users_id' => 'id']);
     }
@@ -203,5 +178,16 @@ class User extends \yii\db\ActiveRecord
     public function getSuratKeteranganMiskins()
     {
         return $this->hasMany(SuratKeteranganMiskin::className(), ['kades_id' => 'id']);
+    }
+
+    
+    /**
+     * Gets query for [[Roles]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoles()
+    {
+        return $this->hasMany(Roles::className(), ['roles_id' => 'id']);
     }
 }

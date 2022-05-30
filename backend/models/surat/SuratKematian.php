@@ -58,17 +58,18 @@ class SuratKematian extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nik', 'nama', 'alamat_lengkap', 'tanggal_lahir', 'jenis_kelamin', 'status_pernikahan', 'pekerjaan_id', 'agama_id', 'kewarganegaraan', 'tanggal_meninggal', 'umur_meninggal', 'tempat_meninggal', 'sebab_meninggal', 'penentu_meninggal', 'nama_pelapor', 'hubungan_pelapor', 'no_telp'], 'required'],
+            [['nik','kewarganegaraan', 'tanggal_meninggal', 'umur_meninggal', 'tempat_meninggal', 'sebab_meninggal', 'nama_pelapor', 'hubungan_pelapor', 'no_telp'], 'required'],
             [['tanggal_lahir', 'tanggal_meninggal', 'created_at', 'upated_at', 'approval_date_kades'], 'safe'],
-            [['status_pernikahan', 'pekerjaan_id', 'agama_id', 'kewarganegaraan', 'penentu_meninggal', 'flag', 'status', 'created_by', 'updated_by', 'kades_id'], 'integer'],
-            [['no_surat', 'nama', 'umur_meninggal'], 'string', 'max' => 50],
+            [['status_pernikahan', 'pekerjaan_id', 'agama_id', 'kewarganegaraan', 'umur_meninggal', 'penentu_meninggal', 'flag', 'status', 'created_by', 'updated_by', 'kades_id'], 'integer'],
+            [['no_surat', 'nama'], 'string', 'max' => 50],
             [['nik', 'no_telp'], 'string', 'max' => 20],
-            [['alamat_lengkap', 'lampiran_kk'], 'string', 'max' => 255],
+            [['alamat_lengkap'], 'string', 'max' => 255],
             [['jenis_kelamin', 'desa_pengantar'], 'string', 'max' => 10],
             [['tempat_meninggal', 'nama_pelapor', 'hubungan_pelapor'], 'string', 'max' => 100],
+            [['lampiran_kk'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
             [['sebab_meninggal'], 'string', 'max' => 250],
             [['agama_id'], 'exist', 'skipOnError' => true, 'targetClass' => \backend\models\Agama::className(), 'targetAttribute' => ['agama_id' => 'id']],
-            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
+            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \backend\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
             [['pekerjaan_id'], 'exist', 'skipOnError' => true, 'targetClass' => \backend\models\Pekerjaan::className(), 'targetAttribute' => ['pekerjaan_id' => 'id']],
             [['status'], 'exist', 'skipOnError' => true, 'targetClass' => StatusSurat::className(), 'targetAttribute' => ['status' => 'id']],
         ];
@@ -129,7 +130,7 @@ class SuratKematian extends \yii\db\ActiveRecord
      */
     public function getKades()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'kades_id']);
+        return $this->hasOne(\backend\models\User::className(), ['id' => 'kades_id']);
     }
 
     /**
@@ -147,8 +148,13 @@ class SuratKematian extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatus()
+    public function getStatus1()
     {
         return $this->hasOne(StatusSurat::className(), ['id' => 'status']);
+    }
+
+    public function getDataPenduduk()
+    {
+        return $this->hasOne(\backend\models\Penduduk::className(), ['id' => 'nik']);
     }
 }

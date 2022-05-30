@@ -35,8 +35,8 @@ class RequestPembangunan extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['judul', 'deskripsi', 'users_id', 'kategori_pembangunan_id', 'statu'], 'required'],
-            [['deskripsi', 'statu'], 'string'],
+            [['judul', 'deskripsi', 'users_id', 'kategori_pembangunan_id', 'status'], 'required'],
+            [['deskripsi', 'status'], 'string'],
             [['users_id', 'kategori_pembangunan_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['judul'], 'string', 'max' => 45],
@@ -56,7 +56,7 @@ class RequestPembangunan extends \yii\db\ActiveRecord
             'deskripsi' => 'Deskripsi',
             'users_id' => 'Users ID',
             'kategori_pembangunan_id' => 'Kategori Pembangunan ID',
-            'statu' => 'Status',
+            'status' => 'Status',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];

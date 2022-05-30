@@ -9,7 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $no_surat
- * @property string $nik
+ * @property int $nik
  * @property string $no_telp
  * @property string $keterangan
  * @property string $surat_pernyataan_miskin
@@ -46,16 +46,17 @@ class SuratKeteranganMiskin extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nik', 'no_telp', 'keterangan', 'surat_pernyataan_miskin', 'lampiran_ktp', 'lampiran_kk'], 'required'],
+            [['no_surat', 'nik_id', 'no_telp', 'keterangan','created_by'], 'required'],
+            [['nik_id', 'status', 'flag', 'created_by', 'updated_by', 'kades_id', 'camat_id'], 'integer'],
             [['keterangan'], 'string'],
-            [['status', 'flag', 'created_by', 'updated_by', 'kades_id', 'camat_id'], 'integer'],
             [['created_at', 'updated_at', 'approval_date_kades', 'approval_date_camat'], 'safe'],
             [['no_surat'], 'string', 'max' => 50],
-            [['nik', 'no_telp'], 'string', 'max' => 20],
+            [['no_telp'], 'string', 'max' => 20],
             [['surat_pernyataan_miskin'], 'string', 'max' => 200],
             [['desa_pengantar'], 'string', 'max' => 10],
             [['lampiran_ktp', 'lampiran_kk'], 'string', 'max' => 100],
-            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
+            [['lampiran_kk'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
+            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \backend\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
             [['status'], 'exist', 'skipOnError' => true, 'targetClass' => StatusSuratKeterangan::className(), 'targetAttribute' => ['status' => 'id']],
         ];
     }
@@ -68,7 +69,7 @@ class SuratKeteranganMiskin extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'no_surat' => 'No Surat',
-            'nik' => 'Nik',
+            'nik_id' => 'Nik',
             'no_telp' => 'No Telp',
             'keterangan' => 'Keterangan',
             'surat_pernyataan_miskin' => 'Surat Pernyataan Miskin',
@@ -95,7 +96,7 @@ class SuratKeteranganMiskin extends \yii\db\ActiveRecord
      */
     public function getKades()
     {
-        return $this->hasOne(\common\models\User::className(), ['id' => 'kades_id']);
+        return $this->hasOne(\backend\models\User::className(), ['id' => 'kades_id']);
     }
 
     public function getPelapor()
@@ -104,12 +105,24 @@ class SuratKeteranganMiskin extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Status]].
+     * Gets query for [[Status0]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatusKeterangan()
+    public function getStatus1()
     {
         return $this->hasOne(StatusSuratKeterangan::className(), ['id' => 'status']);
     }
+
+    /**
+     * Gets query for [[Kades]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDataPenduduk()
+    {
+        return $this->hasOne(\backend\models\Penduduk::className(), ['id' => 'nik_id']);
+    }
+
+    
 }

@@ -37,7 +37,7 @@ class Mitra extends \yii\db\ActiveRecord
             [['alamat'], 'string'],
             [['users_id'], 'integer'],
             [['nama_mitra', 'email'], 'string', 'max' => 100],
-            [['no_telp'], 'string', 'max' => 20],
+            [['no_telp'], 'number', 'max' => 20],
             [['email'], 'unique'],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['users_id' => 'id']],
         ];

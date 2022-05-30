@@ -12,9 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="surat-kematian-view">
+<div class="col-lg-12 mx-auto py-3">
+    <div class="card card-outline card-primary">
+        <h1 class="mx-auto"><?= Html::encode($this->title) ?></h1>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
+        <div style="margin-left: 20px">
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -25,21 +27,23 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+</div>
 
+    <div class="card-body">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
             'no_surat',
-            'nik',
+            'dataPenduduk.nik',
             'nama',
             'alamat_lengkap',
             'tanggal_lahir',
             'jenis_kelamin',
-            'status_pernikahan',
-            'pekerjaan_id',
-            'agama_id',
-            'kewarganegaraan',
+            // 'status_pernikahan',
+            // 'pekerjaan_id',
+            // 'agama_id',
+            // 'kewarganegaraan',
             'tanggal_meninggal',
             'umur_meninggal',
             'tempat_meninggal',
@@ -49,16 +53,28 @@ $this->params['breadcrumbs'][] = $this->title;
             'hubungan_pelapor',
             'no_telp',
             'lampiran_kk',
-            'flag',
-            'status',
-            'created_at',
-            'upated_at',
-            'created_by',
-            'updated_by',
+            // 'flag',
+            // 'status',
+            // 'status1.nama',
+            [
+                'label' => 'Status Surat',
+                'attribute' => 'status1.nama',
+            ],
+            // 'created_at',
+            // 'upated_at',
+            // 'created_by',
+            // 'updated_by',
             'desa_pengantar',
             'approval_date_kades',
-            'kades_id',
+            // 'kades_id',
+            [
+                'label' => 'Nama Kades',
+                'attribute' => 'kades.name',
+            ],
         ],
     ]) ?>
+     </div>
+    </div>
+</div>
 
 </div>

@@ -2,10 +2,12 @@
 
 namespace backend\controllers\admin;
 
+use Yii;
 use backend\models\Dusun;
 use backend\models\DusunSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\MethodNotAllowedHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -29,6 +31,18 @@ class DusunController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1) {
+            throw new MethodNotAllowedHttpException('Hanya Admin yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**

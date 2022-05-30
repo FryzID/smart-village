@@ -4,9 +4,13 @@ namespace backend\controllers\operator;
 
 use backend\models\surat\SuratKeteranganDesa;
 use backend\models\surat\SuratKeteranganDesaSearch;
+use kartik\mpdf\Pdf;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
+use yii\web\UploadedFile;
 
 /**
  * SuratKeteranganDesaController implements the CRUD actions for SuratKeteranganDesa model.
@@ -29,6 +33,18 @@ class SuratKeteranganDesaController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1 && Yii::$app->user->identity->roles_id != 7) {
+            throw new MethodNotAllowedHttpException('Hanya Admin dan Operator yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**
@@ -68,9 +84,25 @@ class SuratKeteranganDesaController extends Controller
     public function actionCreate()
     {
         $model = new SuratKeteranganDesa();
-
+        $user = Yii::$app->user->id;
+        
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'lampiran_ktp');
+
+                $model->created_by = $user;
+                
+                if($model->validate()) {
+                    
+                    $model->save();
+                    if(!empty($foto)) {
+                        $foto->saveAs(Yii::getAlias('@backend/web/gambar/surat-keterangan-desa/ktp/') . $nama . '.' . $foto->extension);
+                        $model->lampiran_ktp = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
+                }
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
@@ -80,6 +112,33 @@ class SuratKeteranganDesaController extends Controller
         return $this->render('create', [
             'model' => $model,
         ]);
+    }
+
+    public function actionPrint($id)
+    {
+        $modelDesa = \backend\models\surat\SuratKeteranganDesa::find()->where(['id' => $id])->all();
+        $dataDesa = \backend\models\surat\SuratKeteranganDesa::findOne(['id' => $id]);
+
+        $content = $this->renderPartial('print\print-desa', [
+            'dataDesa' => $dataDesa,
+            'modelDesa' => $modelDesa,
+        ]);
+
+        $pdf = new Pdf ([
+            'mode' => Pdf::MODE_CORE,
+            'format' => Pdf::FORMAT_A4,
+            'destination' => Pdf::DEST_BROWSER,
+            'content' => $content,
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            'options' => ['title' => 'Krajee Report Title'],
+            'methods' => [
+                'setTitle' => ['Print Surat Keterangan Desa '. $dataDesa->id],
+                // 'setHeader' => ['Kop Surat']
+            ]
+        ]);
+        
+        return $pdf->render();   
     }
 
     /**
@@ -92,9 +151,35 @@ class SuratKeteranganDesaController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $old_image = $model->lampiran_ktp;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) ) {
+
+                $data = $this->findModel($id);
+
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'lampiran_ktp');
+
+                if (is_null($foto)){
+                    $model->lampiran_ktp = $old_image;
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                    if (!empty($foto)) {
+                        if (file_exists($old_image)){
+                            unlink(Yii::getAlias('@backend/web/gambar/surat-keterangan-desa/') . 'ktp/' . $data->lampiran_ktp);
+                        }
+                    
+                        $foto->saveAs(Yii::getAlias('@backend/web/gambar/surat-keterangan-desa/') . 'ktp/' . $nama . '.' . $foto->extension);
+                        $model->lampiran_ktp = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
+                    
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                
+            }
         }
 
         return $this->render('update', [
@@ -111,6 +196,8 @@ class SuratKeteranganDesaController extends Controller
      */
     public function actionDelete($id)
     {
+        $data = $this->findModel($id);
+        unlink(Yii::getAlias('@backend/web/gambar/surat-keterangan-desa/') . 'ktp/' . $data->lampiran_ktp);
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

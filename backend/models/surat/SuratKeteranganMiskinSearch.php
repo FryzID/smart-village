@@ -17,8 +17,8 @@ class SuratKeteranganMiskinSearch extends SuratKeteranganMiskin
     public function rules()
     {
         return [
-            [['id', 'status', 'flag', 'created_by', 'updated_by', 'kades_id', 'camat_id'], 'integer'],
-            [['no_surat', 'nik', 'no_telp', 'keterangan', 'surat_pernyataan_miskin', 'desa_pengantar', 'lampiran_ktp', 'lampiran_kk', 'created_at', 'updated_at', 'approval_date_kades', 'approval_date_camat'], 'safe'],
+            [['id', 'nik_id', 'status', 'flag', 'created_by', 'updated_by', 'kades_id', 'camat_id'], 'integer'],
+            [['no_surat', 'no_telp', 'keterangan', 'surat_pernyataan_miskin', 'desa_pengantar', 'lampiran_ktp', 'lampiran_kk', 'created_at', 'updated_at', 'approval_date_kades', 'approval_date_camat'], 'safe'],
         ];
     }
 
@@ -59,6 +59,7 @@ class SuratKeteranganMiskinSearch extends SuratKeteranganMiskin
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'nik_id' => $this->nik_id,
             'status' => $this->status,
             'flag' => $this->flag,
             'created_at' => $this->created_at,
@@ -72,7 +73,6 @@ class SuratKeteranganMiskinSearch extends SuratKeteranganMiskin
         ]);
 
         $query->andFilterWhere(['like', 'no_surat', $this->no_surat])
-            ->andFilterWhere(['like', 'nik', $this->nik])
             ->andFilterWhere(['like', 'no_telp', $this->no_telp])
             ->andFilterWhere(['like', 'keterangan', $this->keterangan])
             ->andFilterWhere(['like', 'surat_pernyataan_miskin', $this->surat_pernyataan_miskin])

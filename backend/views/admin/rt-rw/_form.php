@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\bootstrap4\ActiveForm;
+use backend\models\Dusun;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\RtRw */
@@ -16,7 +18,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'rt_child')->textInput() ?>
 
-    <?= $form->field($model, 'dusun_id')->textInput() ?>
+    <?= $form->field($model, 'dusun_id')->dropDownList(
+        ArrayHelper::map(Dusun::find()->asArray()->all(), 'id', 'nama_dusun')
+    ) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

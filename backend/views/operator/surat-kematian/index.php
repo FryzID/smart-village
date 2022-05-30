@@ -13,15 +13,16 @@ $this->title = 'Surat Kematians';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="surat-kematian-index">
+<div class="col-lg-12 mx-auto py-3">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card card-outline card-primary">
+        <h1 class="d-flex justify-content-center mb-2"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Surat Kematian', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="mt-3 ml-3">
+            <?= Html::a('<i class="fas fa-plus"></i> Tambah', ['create'], ['class' => 'btn btn-primary']) ?>
+        </div>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+    <div class="card-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -30,7 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'no_surat',
-            'nik',
+            // 'nik',
+            'dataPenduduk.nik',
             'nama',
             'alamat_lengkap',
             //'tanggal_lahir',
@@ -49,7 +51,11 @@ $this->params['breadcrumbs'][] = $this->title;
             //'no_telp',
             //'lampiran_kk',
             //'flag',
-            //'status',
+            // 'status',
+            [
+                'label' => 'Status Surat',
+                'attribute' => 'status1.nama',
+            ],
             //'created_at',
             //'upated_at',
             //'created_by',
@@ -59,9 +65,18 @@ $this->params['breadcrumbs'][] = $this->title;
             //'kades_id',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update} {delete} {print}',
+                'buttons' => [
+                    'print' => function($url, $model, $key) {
+                        return Html::a('<i class = "fa-solid fa-print"></i>', Url::to(['/operator/surat-kematian/print', 'id' => $model->id]));
+                    }
+                ]
             ],
         ],
     ]); ?>
 
-
+    </div>
+    </div>
+    
+</div>
 </div>

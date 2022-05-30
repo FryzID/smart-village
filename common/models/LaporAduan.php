@@ -40,7 +40,7 @@ class LaporAduan extends \yii\db\ActiveRecord
             [['deskripsi', 'status'], 'string'],
             [['users_id', 'pembangunan_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['foto'], 'string', 'max' => 255],
+            [['foto'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
             [['users_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['users_id' => 'id']],
             [['pembangunan_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pembangunan::className(), 'targetAttribute' => ['pembangunan_id' => 'id']],
         ];

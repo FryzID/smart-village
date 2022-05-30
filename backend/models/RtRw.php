@@ -18,6 +18,8 @@ use Yii;
  */
 class RtRw extends \yii\db\ActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
+    
     /**
      * {@inheritdoc}
      */
@@ -35,7 +37,7 @@ class RtRw extends \yii\db\ActiveRecord
             [['rw_parent', 'rt_child', 'dusun_id'], 'required'],
             [['rt_child', 'dusun_id'], 'integer'],
             [['rw_parent'], 'string', 'max' => 5],
-            [['dusun_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\Dusun::className(), 'targetAttribute' => ['dusun_id' => 'id']],
+            [['dusun_id'], 'exist', 'skipOnError' => true, 'targetClass' => Dusun::className(), 'targetAttribute' => ['dusun_id' => 'id']],
         ];
     }
 
@@ -59,7 +61,7 @@ class RtRw extends \yii\db\ActiveRecord
      */
     public function getDusun()
     {
-        return $this->hasOne(\common\models\Dusun::className(), ['id' => 'dusun_id']);
+        return $this->hasOne(Dusun::className(), ['id' => 'dusun_id']);
     }
 
     /**
@@ -68,16 +70,6 @@ class RtRw extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getPenduduks()
-    {
-        return $this->hasMany(Penduduk::className(), ['rt_rw_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Penduduks0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPenduduks0()
     {
         return $this->hasMany(Penduduk::className(), ['rt_rw_id' => 'id']);
     }

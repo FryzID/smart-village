@@ -2,57 +2,46 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\grid\ActionColumn;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\RequestPembangunan */
+/* @var $searchModel backend\models\RequestPembangunanSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Data Request Pembangunan';
+$this->title = 'Request Pembangunans';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="request-pembangunan-index">
+<div class="col-lg-12 mx-auto py-3">
 
-    <div class="table-responsive text-center">
-        <table class="table table-center">
-            <thead class="thead-dark">
-                <tr>
-                    <th>No</th>
-                    <th>Judul</th>
-                    <th>Deskripsi</th>
-                    <th>Tanggal Request</th>
-                    <th>Pelapor</th>
-                    <th>Status</th>
-                    <th>Opsi</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php $nomor = 1?>
-            <?php foreach ($data as $item) {?>
-                <tr>
-                    <th scope="row"><?= $nomor++ ?></th>
-                    <td><?= $item->judul ?></td>
-                    <td><?= $item->deskripsi ?></td>
-                    <td><?= $item->created_at ?></td>
-                    <td><?= $item->user->username ?></td>
-                    <td>
-                        <?php if ($item->statu == 'terverifikasi') { ?>
-                            <span class="badge badge-success"><?= ucwords($item->statu) ?></span>
-                        <?php } elseif ($item->statu == 'ditindaklanjuti') { ?>
-                            <span class="badge badge-info"><?= ucwords($item->statu) ?></span>
-                        <?php } elseif ($item->statu == 'requestbaru') { ?>
-                            <span class="badge badge-secondary"><?= ucwords($item->statu) ?></span>
-                        <?php } ?>
-                    </td>
-                    <td>
-                        <?php if ($item->statu != 'terverifikasi') { ?>
-                            <?= Html::a('<i class="btn btn-info btn-sm fa-regular fa-pen-to-square"></i>', ['operator/request-pembangunan/verifikasi', 'id' => $item->id]); ?>
-                            <!-- <a onclick="verifikasiData<?=($item->id)?>" class="btn btn-info btn-xs glyphicon glyphicon-pencil"
-                            title="VerifikasiData"></a> -->
-                            <i class="btn btn-danger btn-sm fa-regular fa-trash-can"></i>
-                        <?php } ?>
-                    </td>
-                </tr>
-            <?php } ?>
-            </tbody>
-        </table>
+    <div class="card card-outline card-primary">
+        <h1 class="d-flex justify-content-center mb-2"><?= Html::encode($this->title) ?></h1>
+
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <div class="card-body">
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            'id',
+            'judul',
+            'deskripsi:ntext',
+            'users_id',
+            'kategori_pembangunan_id',
+            //'statu',
+            //'created_at',
+            //'updated_at',
+            [
+                'class' => ActionColumn::className(),
+                'template' => '{update} {delete} {view}',
+            ],
+        ],
+    ]); ?>
     </div>
+</div>
 
-
+</div>

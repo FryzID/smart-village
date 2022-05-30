@@ -13,15 +13,18 @@ $this->title = 'Penduduks';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="penduduk-index">
+<div class="col-lg-12 mx-auto py-3">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card card-outline card-primary">
+        <h1 class="d-flex justify-content-center mb-2"><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Penduduk', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <div class="mt-3 ml-3">
+            <?= Html::a('<i class="fas fa-plus"></i> Tambah', ['create'], ['class' => 'btn btn-primary']) ?>
+        </div>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
+    <div class="card-body">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -46,6 +49,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
+</div>
+    </div>
 
+</div>
 
 </div>

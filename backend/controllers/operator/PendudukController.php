@@ -2,11 +2,13 @@
 
 namespace backend\controllers\operator;
 
+use Yii;
 use backend\models\Penduduk;
 use backend\models\PendudukSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * PendudukController implements the CRUD actions for Penduduk model.
@@ -29,6 +31,18 @@ class PendudukController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1 && Yii::$app->user->identity->roles_id != 7) {
+            throw new MethodNotAllowedHttpException('Hanya Admin dan Operator yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**

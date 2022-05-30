@@ -8,11 +8,11 @@ use Yii;
  * This is the model class for table "surat_keterangan_desa".
  *
  * @property int $id
- * @property int $judul_surat
+ * @property string $judul_surat
  * @property string $no_surat
  * @property int $kades_id
- * @property string $nik
- * @property string $no_telp
+ * @property int $nik_id
+ * @property int $no_telp
  * @property string $keterangan
  * @property string $keperluan
  * @property string $lampiran_ktp
@@ -44,16 +44,16 @@ class SuratKeteranganDesa extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['judul_surat', 'nik', 'no_telp', 'keterangan', 'keperluan', 'lampiran_ktp'], 'required'],
-            [['judul_surat', 'kades_id', 'created_by', 'updated_by', 'status', 'flag'], 'integer'],
+            [['judul_surat', 'no_surat', 'nik_id', 'keterangan', 'keperluan'], 'required'],
+            [['kades_id', 'nik_id', 'no_telp', 'created_by', 'updated_by', 'status', 'flag'], 'integer'],
             [['keterangan'], 'string'],
             [['created_at', 'updated_at', 'approval_date_kades'], 'safe'],
+            [['judul_surat', 'lampiran_ktp'], 'string', 'max' => 100],
             [['no_surat'], 'string', 'max' => 50],
-            [['nik', 'no_telp'], 'string', 'max' => 20],
             [['keperluan'], 'string', 'max' => 255],
-            [['lampiran_ktp'], 'string', 'max' => 100],
+            [['lampiran_ktp'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
             [['desa_pengantar'], 'string', 'max' => 10],
-            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
+            [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \backend\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
             [['status'], 'exist', 'skipOnError' => true, 'targetClass' => StatusSurat::className(), 'targetAttribute' => ['status' => 'id']],
         ];
     }
@@ -68,7 +68,7 @@ class SuratKeteranganDesa extends \yii\db\ActiveRecord
             'judul_surat' => 'Judul Surat',
             'no_surat' => 'No Surat',
             'kades_id' => 'Kades ID',
-            'nik' => 'Nik',
+            'nik_id' => 'Nik ID',
             'no_telp' => 'No Telp',
             'keterangan' => 'Keterangan',
             'keperluan' => 'Keperluan',
@@ -83,7 +83,7 @@ class SuratKeteranganDesa extends \yii\db\ActiveRecord
             'approval_date_kades' => 'Approval Date Kades',
         ];
     }
-
+    
     /**
      * Gets query for [[Kades]].
      *
@@ -105,8 +105,18 @@ class SuratKeteranganDesa extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatusSurat()
+     public function getStatus1()
     {
         return $this->hasOne(StatusSurat::className(), ['id' => 'status']);
+    }
+
+    /**
+     * Gets query for [[Kades]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDataPenduduk()
+    {
+        return $this->hasOne(\backend\models\Penduduk::className(), ['id' => 'nik_id']);
     }
 }

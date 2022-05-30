@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\models\surat\SuratKematian;
 use Yii;
 
 /**
@@ -16,6 +17,8 @@ use Yii;
  */
 class Agama extends \yii\db\ActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
+
     /**
      * {@inheritdoc}
      */
@@ -24,6 +27,7 @@ class Agama extends \yii\db\ActiveRecord
         return 'agama';
     }
 
+    
     /**
      * {@inheritdoc}
      */
@@ -52,16 +56,6 @@ class Agama extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getPenduduks()
-    {
-        return $this->hasMany(Penduduk::className(), ['agama_id' => 'id']);
-    }
-
-    /**
-     * Gets query for [[Penduduks0]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPenduduks0()
     {
         return $this->hasMany(Penduduk::className(), ['agama_id' => 'id']);
     }

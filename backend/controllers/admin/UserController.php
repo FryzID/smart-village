@@ -2,10 +2,13 @@
 
 namespace backend\controllers\admin;
 
+use Yii;
 use backend\models\User;
 use backend\models\UserSearch;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
+use yii\web\MethodNotAllowedHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -29,6 +32,17 @@ class UserController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1) {
+            throw new MethodNotAllowedHttpException('Hanya Admin yang boleh mengakses ini');
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -55,14 +69,17 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $data = User::find()->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'data' => $data
         ]);
     }
 
     /**
      * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     * @param string
      * @return string|\yii\web\Response
      */
     public function actionCreate()
@@ -70,11 +87,27 @@ class UserController extends Controller
         $model = new User();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post())) {
+
+                $model->password = Yii::$app->security->generatePasswordHash($model->password);
+                $model->auth_key = Yii::$app->security->generateRandomString();
+
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'photo');
+
+                if($model->validate()) {
+                    
+                    $model->save();
+                    if(!empty($foto)) {
+                        $foto->saveAs(Yii::getAlias('@frontend/web/gambar/profile/') . $nama . '.' . $foto->extension);
+                        $model->photo = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
+                }
+
+                $model->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
@@ -92,9 +125,35 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $old_image = $model->photo;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) ) {
+
+                $data = $this->findModel($id);
+
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'photo');
+
+                if (is_null($foto)){ 
+                    $model->photo = $old_image;
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+                    if (!empty($foto)) {
+                        if (file_exists($old_image)){
+                            unlink(Yii::getAlias('@frontend/web/gambar/') . 'profile/' . $data->photo);
+                        }
+                    
+                        $foto->saveAs(Yii::getAlias('@frontend/web/gambar/') . 'profile/' . $nama . '.' . $foto->extension);
+                        $model->photo = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
+                    
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                
+            }
         }
 
         return $this->render('update', [
@@ -111,6 +170,8 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
+        $data = $this->findModel($id);
+        unlink(Yii::getAlias('@frontend/web/gambar/') . 'profile/' . $data->photo);
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

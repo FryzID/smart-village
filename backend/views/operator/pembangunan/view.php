@@ -12,9 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="pembangunan-view">
+<div class="col-lg-12 mx-auto py-3">
+    <div class="card card-outline card-primary">
+        <h1 class="mx-auto"><?= Html::encode($this->title) ?></h1>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
+        <div style="margin-left: 20px">
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -25,7 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
+    </div>
 
+    <div class="card-body">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -39,14 +43,32 @@ $this->params['breadcrumbs'][] = $this->title;
             'latitude',
             'keterangan',
             'presentase',
-            'sumber_dana_pembangunan_id',
-            'kategori_pembangunan_id',
-            'status_pembangunan_id',
-            'users_id',
-            'mitra_id',
+            [
+                'label' => 'Sumber Dana Pembangunan',
+                'attribute' => 'sumberDanaPembangunan.nama'
+            ],
+            [
+                'label' => 'Kategori Pembangunan',
+                'attribute' => 'kategoriPembangunan.nama'
+            ],
+            [
+                'label' => 'Status Pembangunan',
+                'attribute' => 'statusPembangunan.nama'
+            ],
+            [
+                'label' => 'Created By',
+                'attribute' => 'users.name'
+            ],
+            [
+                'label' => 'Nama Mitra',
+                'attribute' => 'mitra.nama_mitra.nama'
+            ],
             'created_at',
             'updated_at',
         ],
     ]) ?>
+     </div>
+    </div>
+</div>
 
 </div>

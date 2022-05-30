@@ -5,9 +5,11 @@ namespace backend\controllers\operator;
 use Yii;
 use backend\models\Pembangunan;
 use backend\models\PembangunanSearch;
+use yii\web\UploadedFile;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * PembangunanController implements the CRUD actions for Pembangunan model.
@@ -30,6 +32,18 @@ class PembangunanController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1 && Yii::$app->user->identity->roles_id != 7) {
+            throw new MethodNotAllowedHttpException('Hanya Admin dan Operator yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**
@@ -73,11 +87,22 @@ class PembangunanController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post())) {
-                $model->users_id = $user;
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'foto');
+                
+                $model->users_id = $user; 
 
-                if ($model->save()) {
-                    return $this->redirect(['view', 'id' => $model->id]);
+                if($model->validate()) {
+                    
+                    $model->save();
+                    if(!empty($foto)) {
+                        $foto->saveAs(Yii::getAlias('@backend/web/gambar/pembangunan/') . $nama . '.' . $foto->extension);
+                        $model->foto = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
                 }
+                $model->save();
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
             $model->loadDefaultValues();
@@ -98,9 +123,35 @@ class PembangunanController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $old_image = $model->foto;
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) ) {
+
+                $data = $this->findModel($id);
+
+                $nama = Yii::$app->security->generateRandomString(12);
+                $foto = UploadedFile::getInstance($model, 'foto');
+
+                if (is_null($foto)){
+                    $model->foto = $old_image;
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }else if ($model->validate()) {
+                    if (!empty($foto)) {
+                        if (file_exists($old_image)){
+                            unlink(Yii::getAlias('@backend/web/gambar/') . 'pembangunan/' . $data->foto);
+                        }
+                    
+                        $foto->saveAs(Yii::getAlias('@backend/web/gambar/') . 'pembangunan/' . $nama . '.' . $foto->extension);
+                        $model->foto = $nama . '.' . $foto->extension;
+                        $model->save();
+                    }
+                    
+                    $model->save();
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            }
         }
 
         return $this->render('update', [
@@ -117,6 +168,8 @@ class PembangunanController extends Controller
      */
     public function actionDelete($id)
     {
+        $data = $this->findModel($id);
+        unlink(Yii::getAlias('@backend/web/gambar/') . 'pembangunan/' . $data->foto);
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

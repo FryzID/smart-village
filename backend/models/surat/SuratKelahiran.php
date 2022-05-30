@@ -2,6 +2,7 @@
 
 namespace backend\models\surat;
 
+use backend\models\Penduduk;
 use Yii;
 
 /**
@@ -64,16 +65,17 @@ class SuratKelahiran extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nama', 'jenis_kelamin', 'tanggal_lahir', 'berat', 'tinggi', 'tipe_kelahiran', 'tempat_kelahiran', 'tempat_kelahiran_desa', 'penolong_kelahiran', 'nik_ayah', 'nama_ayah', 'tanggal_lahir_ayah', 'alamat_lengkap_ayah', 'kewarganegaraan_ayah', 'no_telp_ayah', 'nik_ibu', 'nama_ibu', 'tanggal_lahir_ibu', 'alamat_lengkap_ibu', 'kewarganegaraan_ibu', 'nama_pelapor', 'hubungan_pelapor'], 'required'],
+            [['nama', 'jenis_kelamin', 'tanggal_lahir', 'berat', 'tinggi', 'tipe_kelahiran', 'tempat_kelahiran', 'tempat_kelahiran_desa', 'penolong_kelahiran', 'nik_ayah', 'kewarganegaraan_ayah', 'no_telp_ayah', 'nik_ibu','alamat_lengkap_ibu', 'kewarganegaraan_ibu', 'nama_pelapor', 'hubungan_pelapor'], 'required'],
             [['tanggal_lahir', 'tanggal_lahir_ayah', 'tanggal_lahir_ibu', 'created_at', 'updated_at', 'approval_date_kades'], 'safe'],
             [['berat', 'tinggi'], 'number'],
-            [['tipe_kelahiran', 'kembar_ke', 'tempat_kelahiran', 'penolong_kelahiran', 'kewarganegaraan_ayah', 'kewarganegaraan_ibu', 'flag', 'status', 'created_by', 'updated_by', 'kades_id'], 'integer'],
+            [[ 'kembar_ke', 'kewarganegaraan_ayah', 'kewarganegaraan_ibu', 'flag', 'status', 'created_by', 'updated_by', 'kades_id'], 'integer'],
             [['no_surat', 'nama', 'nama_ayah', 'nama_ibu'], 'string', 'max' => 50],
             [['jenis_kelamin'], 'string', 'max' => 1],
-            [['tempat_kelahiran_desa', 'nama_pelapor', 'hubungan_pelapor'], 'string', 'max' => 100],
+            [['tempat_kelahiran_desa', 'nama_pelapor', 'tipe_kelahiran', 'hubungan_pelapor', 'penolong_kelahiran'], 'string', 'max' => 100],
             [['nik_ayah', 'no_telp_ayah', 'nik_ibu'], 'string', 'max' => 20],
             [['alamat_lengkap_ayah', 'alamat_lengkap_ibu', 'lampiran_kk', 'lampiran_surat_nikah', 'lampiran_surat_kelahiran'], 'string', 'max' => 255],
             [['desa_pengantar'], 'string', 'max' => 10],
+            [['lampiran_kk'], 'file', 'skipOnEmpty' => true,'extensions' => 'jpg, png, jpeg',],
             [['kades_id'], 'exist', 'skipOnError' => true, 'targetClass' => \common\models\User::className(), 'targetAttribute' => ['kades_id' => 'id']],
             [['status'], 'exist', 'skipOnError' => true, 'targetClass' => StatusSurat::className(), 'targetAttribute' => ['status' => 'id']],
         ];
@@ -140,8 +142,33 @@ class SuratKelahiran extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getStatus()
+    public function getStatus1()
     {
         return $this->hasOne(StatusSurat::className(), ['id' => 'status']);
+    }
+
+    public function getAyah()
+    {
+        return $this->hasOne(Penduduk::className(), ['id' => 'nik_ayah']);
+    }
+
+    public function getIbu()
+    {
+        return $this->hasOne(Penduduk::className(), ['id' => 'nik_ibu']);
+    }
+
+    /**
+     * Gets query for [[Status]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPenduduk()
+    {
+        return $this->hasOne(\backend\models\Penduduk::className(), ['id' => 'nik_ayah']);
+    }
+
+    public function getDataPenduduk()
+    {
+        return $this->hasOne(\backend\models\Penduduk::className(), ['id' => 'nik_ibu']);
     }
 }

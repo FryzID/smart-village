@@ -80,7 +80,7 @@ class LaporAduan extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(Users::className(), ['id' => 'users_id']);
+        return $this->hasOne(\common\models\User::className(), ['id' => 'users_id']);
     }
 
 }

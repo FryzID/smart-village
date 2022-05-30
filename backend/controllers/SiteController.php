@@ -2,14 +2,15 @@
 
 namespace backend\controllers;
 
-use common\models\Pembangunan;
-use common\models\Penduduk;
-use common\models\User;
-use common\models\Dusun;
-use common\models\RtRw;
+use backend\models\Pembangunan;
+use backend\models\Penduduk;
+use backend\models\User;
+use backend\models\Dusun;
+use backend\models\RtRw;
+use backend\models\Roles;
 use common\models\LoginForm;
-use frontend\models\LaporAduan;
-use frontend\models\RequestPembangunan;
+use backend\models\LaporAduan;
+use backend\models\RequestPembangunan;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -76,6 +77,7 @@ class SiteController extends Controller
         $dusun = Dusun::find()->count();
         $totalRtRw = RtRw::find()->count();
         $totalUser = User::find()->count();
+        $totalRole = Roles::find()->count();
 
         $totalPembangunan = Pembangunan::find()
         ->all();
@@ -88,7 +90,8 @@ class SiteController extends Controller
             'dusun' => $dusun,
             'totalRtRw' => $totalRtRw,
             'totalUser' => $totalUser,
-            'totalPembangunan' => $totalPembangunan
+            'totalPembangunan' => $totalPembangunan,
+            'totalRole' => $totalRole
         ]);
     }
 
@@ -110,9 +113,7 @@ class SiteController extends Controller
 
             if (Yii::$app->checkRole->checkOperator()) {
                 return $this->goHome();
-            } elseif (Yii::$app->checkRole->checkAdmin()) {
-                return $this->goBack();
-            }
+            } 
 
         }    
 
@@ -133,6 +134,6 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return $this->redirect('login');
     }
 }

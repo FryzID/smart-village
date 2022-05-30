@@ -1,7 +1,10 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap4\ActiveForm;
+use kartik\select2\Select2;
+use yii\helpers\ArrayHelper;
+use backend\models\User;
 
 /* @var $this yii\web\View */
 /* @var $model backend\models\Mitra */
@@ -20,7 +23,14 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <!-- <?= $form->field($model, 'users_id')->textInput() ?> -->
+    <?= $form->field($model, 'users_id')->widget(Select2::classname(), [
+        'data' => ArrayHelper::map(User::find()->where(['roles_id' => 8])->all(), 'id', 'name'),
+        'language' => 'en',
+        'options' => ['placeholder' => 'Masukan Nama Mitra'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ],) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

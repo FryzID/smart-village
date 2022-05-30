@@ -10,9 +10,11 @@ use yii\bootstrap4\Html;
 $this->title = 'Login';
 ?>
 <div class="site-login">
-    <div class="mt-5 offset-lg-3 col-lg-6">
-        <h1><?= Html::encode($this->title) ?></h1>
+    <div class="card card-outline card-primary">
+        <div class="card-header"><h2 style="text-align: left";><h1><?= Html::encode($this->title) ?></h1></h2></div>
 
+        <div class="card-body login-card-body">
+        
         <p>Please fill out the following fields to login:</p>
 
         <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
@@ -28,5 +30,9 @@ $this->title = 'Login';
             </div>
 
         <?php ActiveForm::end(); ?>
+        
+        </div>
+
+        </div>
     </div>
 </div>

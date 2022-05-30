@@ -7,39 +7,57 @@ use yii\helpers\Url;
 $this->title = 'My Yii Application';
 ?>
 <div class="site-index">
-
-    <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Selamat datang di Smart Village</h1>
-    </div>
-
     <div class="body-content">
-        <div class="jumbotron">
-            <div class="row">
-                <div class="col-lg-4">
+
+    <div class="mx-auto py-3">
+        <div class="row">
+
+            <div class="col-md-4">
+                <div class="card card-outline card-primary mb-5">
+
+                <div class="card-body">
                     <h2>Request Kegiatan</h2>
 
                     <p>Anda dapat memberi saran ataupun ide untuk kegiatan atau apapun yang terkait dengan desa </p>
-                        
-                    <?= Html::a('Beri Saran', ['request-pembangunan/create'], ['class' => 'btn btn-primary']); ?>
+                                
+                    <?= Html::a('Beri Saran', ['request-pembangunan/request'], ['class' => 'btn btn-primary']); ?>
                 </div>
-                <div class="col-lg-4">
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-outline card-secondary">
+
+                <div class="card-body">
                     <h2>Lapor Masalah</h2>
 
                     <p>Anda dapat melaporkan masalah terkait kegiatan atau pembangunan desa yang sedang berlangsung</p>
-
-                    <?= Html::a('Laporkan', ['list-pembangunan/index'], ['class' => 'btn btn-primary']); ?>
+                                
+                    <?= Html::a('Laporkan Masalah', ['/list-pembangunan/index'], ['class' => 'btn btn-secondary']); ?>
                 </div>
-                <div class="col-lg-4">
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-outline card-success">
+
+                <div class="card-body">
                     <h2>Pembangunan</h2>
 
-                    <p>Berisi pembangunan - pembangunan yang sedang berlangsung di desa</p>
+                    <p>Berisi detail pembangunan - pembangunan yang sedang berlangsung di desa</p>
+                                
+                    <?= Html::a('Pembangunan', ['/pembangunan/index'], ['class' => 'btn btn-success']); ?>
+                </div>
 
-                    <?= Html::a('Lihat Sekarang', ['/pembangunan/index'], ['class' => 'btn btn-primary']); ?>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="mt-5 col-lg-12">
+
+        <div class="col-lg-12">
             <div class="card border-primary" style="border-radius: 12px">
                 <div class="card-body mb-5">
                     <h1 class="text-center mb-5">List Laporan yang telah di kirim : </h1> 

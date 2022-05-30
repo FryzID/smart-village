@@ -4,9 +4,11 @@ namespace backend\controllers\operator;
 
 use backend\models\Mitra;
 use backend\models\MitraSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\MethodNotAllowedHttpException;
 
 /**
  * MitraController implements the CRUD actions for Mitra model.
@@ -29,6 +31,18 @@ class MitraController extends Controller
                 ],
             ]
         );
+    }
+
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->user->loginRequired();
+        }elseif (Yii::$app->user->identity->roles_id != 1 && Yii::$app->user->identity->roles_id != 7) {
+            throw new MethodNotAllowedHttpException('Hanya Admin dan Operator yang boleh mengakses ini');
+        } else {
+            return true;
+        }
+       
     }
 
     /**
@@ -68,10 +82,15 @@ class MitraController extends Controller
     public function actionCreate()
     {
         $model = new Mitra();
+        $user = Yii::$app->user->id;
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $model->users_id = $user;
+
+                if ($model->save()) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         } else {
             $model->loadDefaultValues();

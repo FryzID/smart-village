@@ -10,11 +10,15 @@ $this->params['breadcrumbs'][] = ['label' => 'Status Pembangunans', 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="status-pembangunan-create">
+    <div class="col-lg-12 mx-auto py-3">
+        <div class="card card-outline card-primary">
+            <h1 class="mx-auto"><?= Html::encode($this->title) ?></h1>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
+            <div class="card-body">
+                <?= $this->render('_form', [
+                    'model' => $model,
+                ]) ?>
+            </div>
+        </div>
+    </div>
 </div>
